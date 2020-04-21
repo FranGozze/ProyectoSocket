@@ -209,7 +209,7 @@ bool chequeo_ip_port(char ipchar[], char port[]) {
     p = p + (port[i] - '0') * pow(10,digit[i]);
   }
   
-  if(j != 3 || p < 0 || p > 65535)
+  if(ip[0] ==0 || j != 3 || p < 0 || p > 65535)
     valido = false;
   
   for(i = 0; i < 4; i++)
