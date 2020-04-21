@@ -202,18 +202,14 @@ bool chequeo_ip_port(char ipchar[], char port[]) {
     if(ipchar[i] != '.')
       ip[p] = ip[p] + (ipchar[i] - '0') * pow(10,digit[p]-j);
   }
+    j = p;
 
-    if(p != 3)
-    valido = false;
-
-  for(i = 0, p = 0, j = 0; port[i] != '\0'; i++) {
-    digit[j] = strlen(port)-i-1;
-    p = p + (port[i] - '0') * pow(10,digit[j]);
-    j++;
-    printf("port[%i]: %i\n\n",i,p); 
+  for(i = 0, p = 0; port[i] != '\0'; i++) {
+    digit[i] = strlen(port)-i-1;
+    p = p + (port[i] - '0') * pow(10,digit[i]);
   }
   
-  if(p < 0 || p > 65535)
+  if(j != 3 || p < 0 || p > 65535)
     valido = false;
   
   for(i = 0; i < 4; i++)
