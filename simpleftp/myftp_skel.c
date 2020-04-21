@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <math.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -179,6 +180,35 @@ void operate(int sd) {
     free(input);
 }
 
+bool chequeo_ip_port(char ipchar[], char port[]) {
+  int i, j, puntos = 0, digit[] = {-1,-1,-1,-1}, ip[] = {0,0,0,0};
+  bool valido = true;
+
+  for(i = 0; ipchar[i] != '\0'; i++){
+    if(ipchar[i] != '.')
+      digit[puntos] ++;
+    else puntos++;
+  }
+  puntos = 0;
+  for(i = 0, j = 0; ipchar[i] != '\0'; i++, j++) { 
+    if(ipchar[i-1] == '.')
+      j = 0;
+    if(ipchar[i] == '.')
+      puntos++;
+    if(ipchar[i] != '.')
+      ip[puntos] = ip[puntos] + (ipchar[i] - '0') * pow(10,digit[puntos]-j);
+  }
+
+  if(puntos != 3)
+    valido = false;
+  
+  for(i = 0; i < 4; i++)
+    if(ip[i] > 255 || ip[i] < 0)
+      valido = false;
+
+  return valido;
+}
+
 /**
  * Run with
  *         ./myftp <SERVER_IP> <SERVER_PORT>
@@ -187,7 +217,13 @@ int main (int argc, char *argv[]) {
     int sd;
     struct sockaddr_in addr;
 
+    printf("IP: %s\nPuerto: %s\n",argv[1],argv[2]);
+
     // arguments checking
+    if(chequeo_ip_port(argv[1],argv[2]))
+      printf("IP y puerto validos\n");
+    else
+      printf("IP y puerto no validos\n");
 
     // create socket and check for errors
     
