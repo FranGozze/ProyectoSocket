@@ -209,7 +209,7 @@ bool chequeo_ip_port(char ipchar[], char port[]) {
     p = p + (port[i] - '0') * pow(10,digit[i]);
   }
   
-  if(ip[0] ==0 || j != 3 || p < 0 || p > 65535)
+  if(ip[0] == 0 || ip[0] > 223 || j != 3 || p < 0 || p > 65535)
     valido = false;
   
   for(i = 0; i < 4; i++)
@@ -227,13 +227,15 @@ int main (int argc, char *argv[]) {
     int sd;
     struct sockaddr_in addr;
 
-    printf("IP: %s\nPuerto: %s\n",argv[1],argv[2]);
-
-    // arguments checking
-    if(chequeo_ip_port(argv[1],argv[2]))
-      printf("IP y puerto validos\n");
-    else
+    // arguments checkin
+    if(argc != 3) {
+      printf("<ip> <puerto>\n");
+      return 1;
+    }
+    if(chequeo_ip_port(argv[1],argv[2])) {
       printf("IP y puerto no validos\n");
+      return 1; 
+    }
 
     // create socket and check for errors
     
