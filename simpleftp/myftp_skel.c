@@ -180,26 +180,40 @@ void operate(int sd) {
     free(input);
 }
 
+/**
+ * funcion: toma la ip y el puerto, y verifica si ambos son
+ * validos
+ **/
 bool chequeo_ip_port(char ipchar[], char port[]) {
-  int i, j, puntos = 0, digit[] = {-1,-1,-1,-1}, ip[] = {0,0,0,0};
+  int i, j, p = 0, digit[] = {-1,-1,-1,-1,-1}, ip[] = {0,0,0,0};
   bool valido = true;
 
   for(i = 0; ipchar[i] != '\0'; i++){
     if(ipchar[i] != '.')
-      digit[puntos] ++;
-    else puntos++;
+      digit[p] ++;
+    else p++;
   }
-  puntos = 0;
-  for(i = 0, j = 0; ipchar[i] != '\0'; i++, j++) { 
+
+  for(i = 0, j = 0, p = 0; ipchar[i] != '\0'; i++, j++) { 
     if(ipchar[i-1] == '.')
       j = 0;
     if(ipchar[i] == '.')
-      puntos++;
+      p++;
     if(ipchar[i] != '.')
-      ip[puntos] = ip[puntos] + (ipchar[i] - '0') * pow(10,digit[puntos]-j);
+      ip[p] = ip[p] + (ipchar[i] - '0') * pow(10,digit[p]-j);
   }
 
-  if(puntos != 3)
+    if(p != 3)
+    valido = false;
+
+  for(i = 0, p = 0, j = 0; port[i] != '\0'; i++) {
+    digit[j] = strlen(port)-i-1;
+    p = p + (port[i] - '0') * pow(10,digit[j]);
+    j++;
+    printf("port[%i]: %i\n\n",i,p); 
+  }
+  
+  if(p < 0 || p > 65535)
     valido = false;
   
   for(i = 0; i < 4; i++)
