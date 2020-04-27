@@ -124,8 +124,6 @@ bool check_credentials(char *user, char *pass) {
     size_t len = 0;
     bool found = false;
 
-    // make the credential string
-
     // check if ftpusers file it's present
 
     // search for credential string
@@ -133,6 +131,7 @@ bool check_credentials(char *user, char *pass) {
     // close file and release any pointes if necessary
 
     // return search status
+    return found;
 }
 
 /**
@@ -142,16 +141,22 @@ bool check_credentials(char *user, char *pass) {
  **/
 bool authenticate(int sd) {
     char user[PARSIZE], pass[PARSIZE];
+    bool validar = true;
 
-    // wait to receive USER action
+    // ask for user and wait to receive
+    printf("Por favor, ingrese su nombre de usuario: ");
+    scanf("%s",user);
 
-    // ask for password
-
-    // wait to receive PASS action
+    // ask for password and wait to recieve
+    printf("Por favor, ingrese su contraseña: ");
+    scanf("%s",pass);
 
     // if credentials don't check denied login
+    if(check_credentials(user,pass) == false)
+      validar = false;
 
     // confirm login
+    return validar;
 }
 
 /**
@@ -194,7 +199,11 @@ int main (int argc, char *argv[]) {
     // reserve sockets and variables space
 
     // create server socket and check errors
-    
+    if(authenticate(1) == false) {
+      printf("\nDatos ingresados erroneamente\n");
+      return 1;
+    }
+
     // bind master socket and check errors
 
     // make it listen

@@ -181,45 +181,6 @@ void operate(int sd) {
 }
 
 /**
- * funcion: toma la ip y el puerto, y verifica si ambos son
- * validos
- **/
-bool chequeo_ip_port(char ipchar[], char port[]) {
-  int i, j, p = 0, digit[] = {-1,-1,-1,-1,-1}, ip[] = {0,0,0,0};
-  bool valido = true;
-
-  for(i = 0; ipchar[i] != '\0'; i++){
-    if(ipchar[i] != '.')
-      digit[p] ++;
-    else p++;
-  }
-
-  for(i = 0, j = 0, p = 0; ipchar[i] != '\0'; i++, j++) { 
-    if(ipchar[i-1] == '.')
-      j = 0;
-    if(ipchar[i] == '.')
-      p++;
-    if(ipchar[i] != '.')
-      ip[p] = ip[p] + (ipchar[i] - '0') * pow(10,digit[p]-j);
-  }
-    j = p;
-
-  for(i = 0, p = 0; port[i] != '\0'; i++) {
-    digit[i] = strlen(port)-i-1;
-    p = p + (port[i] - '0') * pow(10,digit[i]);
-  }
-  
-  if(ip[0] == 0 || ip[0] > 223 || j != 3 || p < 0 || p > 65535)
-    valido = false;
-  
-  for(i = 0; i < 4; i++)
-    if(ip[i] > 255 || ip[i] < 0)
-      valido = false;
-
-  return valido;
-}
-
-/**
  * Run with
  *         ./myftp <SERVER_IP> <SERVER_PORT>
  **/
@@ -228,14 +189,6 @@ int main (int argc, char *argv[]) {
     struct sockaddr_in addr;
 
     // arguments checkin
-    if(argc != 3) {
-      printf("<ip> <puerto>\n");
-      return 1;
-    }
-    if(chequeo_ip_port(argv[1],argv[2])) {
-      printf("IP y puerto no validos\n");
-      return 1; 
-    }
 
     // create socket and check for errors
     
