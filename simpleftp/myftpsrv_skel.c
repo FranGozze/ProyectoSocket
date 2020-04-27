@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <err.h>
+#include <fcntl.h>
 
 #include <netinet/in.h>
 
@@ -120,15 +121,34 @@ void retr(int sd, char *file_path) {
  **/
 bool check_credentials(char *user, char *pass) {
     FILE *file;
-    char *path = "./ftpusers", *line = NULL, cred[100];
+    char *path = "./ftpusers", *line = NULL, cred[100], comparacion[100];
     size_t len = 0;
     bool found = false;
+    cred[0] = '\0';
+    
+
+    // make the credential string
+    strcat(strcat(cred,strcat(strcat(user,"-"),pass)),"\n");
 
     // check if ftpusers file it's present
+    if(open(path, O_RDONLY) == -1) {
+      printf("La base de datos no existe");
+      return found;
+    }
+    else
+      file = fopen(path, "r");
 
     // search for credential string
+    for(;strcmp(cred,comparacion) != 0 && !feof(file);)
+      fgets(comparacion, 100, file);
+
+    if(strcmp(cred,comparacion) == 0)
+      found = true;
+    else
+      printf("Usuario o contraseña incorrectos\n");
 
     // close file and release any pointes if necessary
+    fclose(file);
 
     // return search status
     return found;
@@ -199,9 +219,11 @@ int main (int argc, char *argv[]) {
     // reserve sockets and variables space
 
     // create server socket and check errors
-    if(authenticate(1) == false) {
-      printf("\nDatos ingresados erroneamente\n");
+    if(authenticate(1) == false)
       return 1;
+    else {
+      printf("Datos correctos\n");
+      return 0;
     }
 
     // bind master socket and check errors
